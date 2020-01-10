@@ -17,3 +17,4 @@ release/
 **/*.swo
 **/*-min.js
 pkg/interface/link-webext/web-ext-artifacts
+**/build
