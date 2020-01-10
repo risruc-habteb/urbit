@@ -11,7 +11,7 @@
 /=  js
   /^  octs
   /;  as-octs:mimes:html
-  /|  /:  /===/app/publish/js/index  /js/
+  /|  /:  /===/app/publish/js/index-min  /js/
       /~  ~
   ==
 ::
@@ -25,7 +25,7 @@
 /=  tile-js
   /^  octs
   /;  as-octs:mimes:html
-  /|  /:  /===/app/publish/js/tile  /js/
+  /|  /:  /===/app/publish/js/tile-min  /js/
       /~  ~
   ==
 ::
@@ -243,7 +243,7 @@
 ++  write-file
   =,  space:userlib
   |=  [pax=path cay=cage]
-  ^-  card 
+  ^-  card
   =.  pax  (weld our-beak pax)
   [%pass (weld /write-file pax) %arvo %c %info (foal pax cay)]
 ::
