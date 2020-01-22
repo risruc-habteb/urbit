@@ -141,9 +141,9 @@ export class LinkDetail extends Component {
         popout={popout}
         path={path}/>
       </div>
-      <div className="w-100 mt6 flex justify-center overflow-y-scroll pa4">
+      <div className="w-100 mt2 flex justify-center overflow-y-scroll ph4 pb4">
         <div className="w-100 mw7">
-          <div className="pt6 pb6 flex">
+          <div className="pb6 flex">
             <Sigil
             ship={"~" + ship}
             size={36}
@@ -173,9 +173,9 @@ export class LinkDetail extends Component {
                   </div>
                 </div>
               </div>
-            <div className="relative ba br1 b--gray4 mt6 mb6">
+            <div className="relative ba br1 b--gray4 b--gray2-d mt6 mb6">
               <textarea
-              className="w-100 bg-black-d white-d f8 pa2 pr8"
+              className="w-100 bg-gray0-d white-d f8 pa2 pr8"
               style={{
                 resize: "none",
                 height: 75
@@ -184,7 +184,7 @@ export class LinkDetail extends Component {
               onChange={this.setComment}
               value={this.state.comment}
               />
-              <button className={"f8 bg-black-d white-d ml2 absolute " 
+              <button className={"f8 bg-gray0-d white-d ml2 absolute " 
               + activeClasses}
               disabled={!this.state.comment}
               onClick={this.onClickPost.bind(this)}

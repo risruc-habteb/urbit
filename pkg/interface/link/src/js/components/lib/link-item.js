@@ -59,7 +59,7 @@ export class LinkItem extends Component {
           className="w-100 flex"
           target="_blank">
             <p className="f8 truncate">{props.title}
-              <span className="gray2 dib truncate-m mw3-m v-btm ml2">{hostname} ↗</span>
+              <span className="gray2 dib truncate-m mw4-m v-btm ml2">{hostname} ↗</span>
             </p>
           </a>
           <div className="w-100 pt1">

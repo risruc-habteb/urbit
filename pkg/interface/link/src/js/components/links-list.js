@@ -9,7 +9,7 @@ import { Pagination } from '/components/lib/pagination.js';
 //TODO look at uxToHex wonky functionality
 import { uxToHex } from '../lib/util';
 
-
+//TODO Avatar support once it's in
 export class Links extends Component {
 
   componentDidMount() {
@@ -118,7 +118,7 @@ export class Links extends Component {
           popout={popout}
           path={props.path}/>
         </div>
-        <div className="w-100 mt6 flex justify-center overflow-y-scroll pa4">
+        <div className="w-100 mt2 flex justify-center overflow-y-scroll ph4 pb4">
           <div className="w-100 mw7">
             <div className="flex">
               <LinkSubmit path={props.path}/>
