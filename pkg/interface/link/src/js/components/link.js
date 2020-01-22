@@ -194,7 +194,17 @@ export class LinkDetail extends Component {
               Post
               </button>
               </div>
-            <Comments comments={props.data.comments} members={props.members}/>
+            <Comments 
+            path={props.path} 
+            key={props.path + props.commentPage}
+            comments={props.data.comments} 
+            commentPage={props.commentPage} 
+            members={props.members}
+            popout={props.popout}
+            url={props.data.url}
+            linkPage={props.page}
+            linkIndex={props.link}
+            />
             </div>
           </div>
         </div>

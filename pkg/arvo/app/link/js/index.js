@@ -49862,6 +49862,7 @@
                   this.add(data, state);
                   this.comments(data, state);
                   this.commentAdd(data, state);
+                  this.commentPage(data, state);
                   this.page(data, state);
                 }
               }
@@ -49885,7 +49886,10 @@
                   let index = data.index;
                   let storage = state.links[path][page][index];
 
-                  storage.comments = data.data;
+                  storage.comments = {};
+                  storage.comments["page0"] = data.data.page;
+                  storage.comments["total-items"] = data.data["total-items"];
+                  storage.comments["total-pages"] = data.data["total-pages"];
 
                   state.links[path][page][index] = storage;
                 }
@@ -49909,6 +49913,22 @@
                   let tempArray = state.links[path][page][index].comments.page;
                   tempArray.unshift(tempObj);
                   state.links[path][page][index].comments.page = tempArray;
+                }
+              }
+
+              commentPage(json, state) {
+                let data = lodash.get(json, 'commentPage', false);
+                if (data) {
+                  let path = data.path;
+                  let linkPage = "page" + data.linkPage;
+                  let linkIndex = data.index;
+                  let commentPage = "page" + data.comPageNo;
+
+                  if (!state.links[path]) {
+                    return false;
+                  }
+
+                  state.links[path][linkPage][linkIndex].comments[commentPage] = data.data;
                 }
               }
 
@@ -54689,7 +54709,7 @@
               }
 
               async getComments(path, url, page, index) {
-                let endpoint = "/~link/discussions" + path + "/" + window.btoa(url) + ".json";
+                let endpoint = "/~link/discussions" + path + "/" + window.btoa(url) + ".json?p=0";
                 let promise = await fetch(endpoint);
                 if (promise.ok) {
                   let comments = {};
@@ -54700,6 +54720,23 @@
                   comments["link-update"].comments.index = index;
                   comments["link-update"].comments.data = await promise.json();
                   store.handleEvent(comments);
+                }
+              }
+
+              async getCommentsPage(path, url, page, index, commentPage) {
+                let endpoint = "/~link/discussions" + path + "/" + window.btoa(url) + ".json?p=" + commentPage;
+                let promise = await fetch(endpoint);
+                if (promise.ok) {
+                  let responseData = await promise.json();
+                  let update = {};
+                  update["link-update"] = {};
+                  update["link-update"].commentPage = {};
+                  update["link-update"].commentPage.path = path;
+                  update["link-update"].commentPage.linkPage = page;
+                  update["link-update"].commentPage.index = index;
+                  update["link-update"].commentPage.comPageNo = commentPage;
+                  update["link-update"].commentPage.data = responseData.page;
+                  store.handleEvent(update);
                 }
               }
 
@@ -67512,7 +67549,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                       className: "w-100 flex" ,
                       target: "_blank", __self: this, __source: {fileName: _jsxFileName$6, lineNumber: 58}}
                         , react.createElement('p', { className: "f8 truncate" , __self: this, __source: {fileName: _jsxFileName$6, lineNumber: 61}}, props.title
-                          , react.createElement('span', { className: "gray2 ml2 flex-shrink-0"  , __self: this, __source: {fileName: _jsxFileName$6, lineNumber: 62}}, hostname, " ↗" )
+                          , react.createElement('span', { className: "gray2 dib truncate-m mw3-m v-btm ml2"     , __self: this, __source: {fileName: _jsxFileName$6, lineNumber: 62}}, hostname, " ↗" )
                         )
                       )
                       , react.createElement('div', { className: "w-100 pt1" , __self: this, __source: {fileName: _jsxFileName$6, lineNumber: 65}}
@@ -67648,11 +67685,51 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
               }
             }
 
-            const _jsxFileName$8 = "/Users/matilde/git/tlon/urbit/pkg/interface/link/src/js/components/links-list.js";
+            const _jsxFileName$8 = "/Users/matilde/git/tlon/urbit/pkg/interface/link/src/js/components/lib/pagination.js";
+            class Pagination extends react_1 {
+              render() {
+                let props = this.props;
+
+                let prevPage = "/" + (Number(props.page) - 1);
+                let nextPage = "/" + (Number(props.page) + 1);
+
+                let prevDisplay = ((props.currentPage > 0))
+                ? "dib absolute left-0"
+                : "dn";
+
+                let nextDisplay = ((props.currentPage + 1) < props.totalPages) 
+                ? "dib absolute right-0" 
+                : "dn";
+
+                return (
+                  react.createElement('div', { className: "w-100 inter relative pv6"   , __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 20}}
+                    , react.createElement('div', { className: prevDisplay + " inter f8", __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 21}}
+                      , react.createElement(Link$1, { to: "/~link" + props.popout + props.path + prevPage, __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 22}}, "<- Previous Page"
+
+                      )
+                    )
+                    , react.createElement('div', { className: nextDisplay + " inter f8", __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 26}}
+                      , react.createElement(Link$1, { to: "/~link" + props.popout + props.path + nextPage, __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 27}}, "Next Page ->"
+
+                      )
+                    )
+                  )
+                )
+              }
+            }
+
+            const _jsxFileName$9 = "/Users/matilde/git/tlon/urbit/pkg/interface/link/src/js/components/links-list.js";
 
             class Links extends react_1 {
 
               componentDidMount() {
+                let linkPage = "page" + this.props.page;
+                if ((this.props.page !== 0) && (!this.props.links[linkPage])) {
+                  api.getPage(this.props.path, this.props.page);
+                }
+              }
+
+              componentDidUpdate() {
                 let linkPage = "page" + this.props.page;
                 if ((this.props.page !== 0) && (!this.props.links[linkPage])) {
                   api.getPage(this.props.path, this.props.page);
@@ -67665,11 +67742,17 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                 let channel = props.path.substr(1);
                 let linkPage = "page" + props.page;
 
-                //TODO if "page[num]" is not in state, ask for it, send it to update reducer
-
                 let links = !!props.links[linkPage]
                 ? props.links[linkPage]
                 : {};
+
+                let currentPage = !!props.page
+                ? Number(props.page)
+                : 0;
+
+                let totalPages = !!props.links
+                ? Number(props.links["total-pages"])
+                : 1;
 
                 let LinkList = Object.keys(links)
                 .map((link) => {
@@ -67708,33 +67791,33 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                     color: color,
                     comments: commentCount,
                     channel: channel,
-                    popout: popout, __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 58}}
+                    popout: popout, __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 72}}
                     )
                   )
                 });
 
                 return (
                   react.createElement('div', {
-                  className: "h-100 w-100 overflow-hidden flex flex-column"    , __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 76}}
+                  className: "h-100 w-100 overflow-hidden flex flex-column"    , __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 90}}
                     , react.createElement('div', {
                       className: "w-100 dn-m dn-l dn-xl inter pt4 pb6 pl3 f8"        ,
-                      style: { height: "1rem" }, __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 78}}
-                     , react.createElement(Link$1, { to: "/~link/", __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 81}}, "⟵ All Channels")
+                      style: { height: "1rem" }, __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 92}}
+                     , react.createElement(Link$1, { to: "/~link/", __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 95}}, "⟵ All Channels")
                    )
                    , react.createElement('div', {
                      className: `pl3 pt2 flex relative overflow-x-scroll 
          overflow-x-auto-l overflow-x-auto-xl flex-shrink-0
          bb bn-m bn-l bn-xl b--gray4`,
-                     style: { height: 48 }, __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 83}}
+                     style: { height: 48 }, __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 97}}
                       , react.createElement(SidebarSwitcher, {
                        sidebarShown: props.sidebarShown,
-                       popout: props.popout, __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 88}})
-                     , react.createElement(Link$1, { to: `/~link` + popout + props.path, className: "pt2", __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 91}}
+                       popout: props.popout, __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 102}})
+                     , react.createElement(Link$1, { to: `/~link` + popout + props.path, className: "pt2", __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 105}}
                        , react.createElement('h2', {
                          className: `dib f8 fw4 v-top ` + 
                          (props.path.includes("/~/")
                          ? ""
-                         : "mono"), __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 92}}
+                         : "mono"), __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 106}}
                           , (props.path.includes("/~/"))
                           ? "Private"
                           : channel
@@ -67743,16 +67826,23 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                       , react.createElement(LinksTabBar, {
                       ...props,
                       popout: popout,
-                      path: props.path, __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 102}})
+                      path: props.path, __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 116}})
                     )
-                    , react.createElement('div', { className: "w-100 mt6 flex justify-center overflow-y-scroll pa4"     , __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 107}}
-                      , react.createElement('div', { className: "w-100 mw7" , __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 108}}
-                        , react.createElement('div', { className: "flex", __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 109}}
-                          , react.createElement(LinkSubmit, { path: props.path, __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 110}})
+                    , react.createElement('div', { className: "w-100 mt6 flex justify-center overflow-y-scroll pa4"     , __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 121}}
+                      , react.createElement('div', { className: "w-100 mw7" , __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 122}}
+                        , react.createElement('div', { className: "flex", __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 123}}
+                          , react.createElement(LinkSubmit, { path: props.path, __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 124}})
                         )
-                        , react.createElement('div', { className: "pb4", __self: this, __source: {fileName: _jsxFileName$8, lineNumber: 112}}
+                        , react.createElement('div', { className: "pb4", __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 126}}
                         , LinkList
-                        /*TODO Pagination */
+                        , react.createElement(Pagination, {
+                        ...props,
+                        key: props.path + props.page,
+                        popout: popout,
+                        path: props.path,
+                        currentPage: currentPage,
+                        totalPages: totalPages, __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 128}}
+                        )
                         )
                       )
                     )
@@ -67761,7 +67851,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
               }
             }
 
-            const _jsxFileName$9 = "/Users/matilde/git/tlon/urbit/pkg/interface/link/src/js/components/lib/comment-item.js";
+            const _jsxFileName$a = "/Users/matilde/git/tlon/urbit/pkg/interface/link/src/js/components/lib/comment-item.js";
             class CommentItem extends react_1 {
               constructor(props) {
                 super(props);
@@ -67792,41 +67882,126 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
               render() {
                 let props = this.props;
                 return (
-                  react.createElement('div', { className: "w-100 pv3" , __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 35}}
-                    , react.createElement('div', { className: "flex", __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 36}}
+                  react.createElement('div', { className: "w-100 pv3" , __self: this, __source: {fileName: _jsxFileName$a, lineNumber: 35}}
+                    , react.createElement('div', { className: "flex", __self: this, __source: {fileName: _jsxFileName$a, lineNumber: 36}}
                       , react.createElement(Sigil, {
                       ship: "~" + props.ship,
                       size: 36,
-                      color: "#" + props.color, __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 37}}
+                      color: "#" + props.color, __self: this, __source: {fileName: _jsxFileName$a, lineNumber: 37}}
                       )
-                      , react.createElement('p', { className: "gray2 f9 flex items-center ml2"    , __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 42}}
-                        , react.createElement('span', { className: "black " + props.nameClass, __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 43}}
+                      , react.createElement('p', { className: "gray2 f9 flex items-center ml2"    , __self: this, __source: {fileName: _jsxFileName$a, lineNumber: 42}}
+                        , react.createElement('span', { className: "black " + props.nameClass, __self: this, __source: {fileName: _jsxFileName$a, lineNumber: 43}}
                         , ((props.nickname) ? props.nickname : props.ship)
                         )
-                        , react.createElement('span', { className: "ml2", __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 46}}
+                        , react.createElement('span', { className: "ml2", __self: this, __source: {fileName: _jsxFileName$a, lineNumber: 46}}
                           , this.state.timeSinceComment
                         )
                       )
                     )
-                    , react.createElement('p', { className: "inter f8 pv3"  , __self: this, __source: {fileName: _jsxFileName$9, lineNumber: 51}}, props.content)
+                    , react.createElement('p', { className: "inter f8 pv3"  , __self: this, __source: {fileName: _jsxFileName$a, lineNumber: 51}}, props.content)
                   )
                 )
               }
             }
 
-            const _jsxFileName$a = "/Users/matilde/git/tlon/urbit/pkg/interface/link/src/js/components/lib/comments.js";
-            class Comments extends react_1 {
+            const _jsxFileName$b = "/Users/matilde/git/tlon/urbit/pkg/interface/link/src/js/components/lib/comments-pagination.js";
+            class CommentsPagination extends react_1 {
               render() {
                 let props = this.props;
 
-                let comments = !!props.comments
-                ? props.comments.page
+                let prevPage = "/" + (Number(props.commentPage) - 1);
+                let nextPage = "/" + (Number(props.commentPage) + 1);
+
+                let prevDisplay = ((Number(props.commentPage) > 0))
+                ? "dib"
+                : "dn";
+
+                let nextDisplay = (Number(props.commentPage + 1) < Number(props.total))
+                ? "dib"
+                : "dn";
+
+                let popout = (props.popout) ? "/popout" : "";
+
+                return (
+                  react.createElement('div', { className: "w-100 relative pt4 pb6"   , __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 22}}
+                    , react.createElement(Link$1, {
+                    className: "pb6 absolute inter f8 left-0 " + prevDisplay,
+                    to: "/~link"
+                    + popout
+                    + props.path
+                    + "/" + props.linkPage
+                    + "/" + props.linkIndex
+                    + "/comments" + prevPage, __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 23}}, "<- Previous Page"
+
+                    )
+                    , react.createElement(Link$1, {
+                    className: "pb6 absolute inter f8 right-0 " + nextDisplay,
+                    to: "/~link" 
+                    + popout
+                    + props.path 
+                    + "/" + props.linkPage 
+                    + "/" + props.linkIndex 
+                    + "/comments" + nextPage, __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 33}}, "Next Page ->"
+
+                    )
+                  )
+                )
+              }
+            }
+
+            const _jsxFileName$c = "/Users/matilde/git/tlon/urbit/pkg/interface/link/src/js/components/lib/comments.js";
+            class Comments extends react_1 {
+
+              componentDidMount() {
+                let page = "page" + this.props.commentPage;
+                let comments = !!this.props.comments;
+                if ((!comments[page]) && (page !== "page0")) {
+                  api$1.getCommentsPage(
+                    this.props.path, 
+                    this.props.url, 
+                    this.props.linkPage, 
+                    this.props.linkIndex, 
+                    this.props.commentPage);
+                }
+              }
+
+              componentDidUpdate(prevProps) {
+                let page = "page" + this.props.commentPage;
+                if (prevProps !== this.props) {
+                  if (!!this.props.comments) {
+                    if ((page !== "page0") && (!this.props.comments[page])) {
+                      api$1.getCommentsPage(
+                        this.props.path, 
+                        this.props.url, 
+                        this.props.linkPage, 
+                        this.props.linkIndex, 
+                        this.props.commentPage);
+                    }
+                  }
+                }
+              }
+
+              render() {
+                let props = this.props;
+                
+                let page = "page" + props.commentPage;
+
+                let commentsObj = !!props.comments
+                ? props.comments
                 : {};
 
-                let commentsList = Object.keys(comments)
+                let commentsPage = !!commentsObj[page]
+                ? commentsObj[page]
+                : {};
+
+                let total = !!props.comments
+                ? props.comments["total-pages"]
+                : {};
+
+                let commentsList = Object.keys(commentsPage)
                 .map((entry) => {
 
-                  let commentObj = comments[entry];
+                  let commentObj = commentsPage[entry];
                   let { ship, time, udon } = commentObj;
 
                   let members = !!props.members 
@@ -67851,19 +68026,27 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                       content: udon,
                       nickname: nickname,
                       nameClass: nameClass,
-                      color: color, __self: this, __source: {fileName: _jsxFileName$a, lineNumber: 35}}
+                      color: color, __self: this, __source: {fileName: _jsxFileName$c, lineNumber: 77}}
                     )
                   )
                 });
                 return (
-                  react.createElement('div', {__self: this, __source: {fileName: _jsxFileName$a, lineNumber: 47}}
+                  react.createElement('div', {__self: this, __source: {fileName: _jsxFileName$c, lineNumber: 89}}
                     , commentsList
+                    , react.createElement(CommentsPagination, {
+                    key: props.path + props.commentPage,
+                    path: props.path,
+                    popout: props.popout,
+                    linkPage: props.linkPage,
+                    linkIndex: props.linkIndex,
+                    commentPage: props.commentPage,
+                    total: total, __self: this, __source: {fileName: _jsxFileName$c, lineNumber: 91}})
                   )
                 )
               }
             }
 
-            const _jsxFileName$b = "/Users/matilde/git/tlon/urbit/pkg/interface/link/src/js/components/link.js";
+            const _jsxFileName$d = "/Users/matilde/git/tlon/urbit/pkg/interface/link/src/js/components/link.js";
             class LinkDetail extends react_1 {
               constructor(props) {
                 super(props);
@@ -67978,58 +68161,58 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                 : "gray2 b--gray2";
                 
                 return (
-                  react.createElement('div', { className: "h-100 w-100 overflow-hidden flex flex-column"    , __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 125}}
+                  react.createElement('div', { className: "h-100 w-100 overflow-hidden flex flex-column"    , __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 125}}
                   , react.createElement('div', {
                   className: `pl3 pt2 flex relative overflow-x-scroll 
       overflow-x-auto-l overflow-x-auto-xl flex-shrink-0
       bb bn-m bn-l bn-xl b--gray4`,
-                  style: { height: 48 }, __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 126}}
+                  style: { height: 48 }, __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 126}}
                     , react.createElement(SidebarSwitcher, {
                     sidebarShown: props.sidebarShown,
-                    popout: props.popout, __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 131}})
+                    popout: props.popout, __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 131}})
                     , react.createElement(Link$1, { 
                     className: "dib f8 fw4 v-top pt2 gray2"     ,
-                    to: "/~link" + props.path + "/" + props.page, __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 134}}
+                    to: "/~link" + props.path + "/" + props.page, __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 134}}
                     , "<- Collection index"
                     )
                     , react.createElement(LinksTabBar, {
                     ...props,
                     popout: popout,
-                    path: path, __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 139}})
+                    path: path, __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 139}})
                   )
-                  , react.createElement('div', { className: "w-100 mt6 flex justify-center overflow-y-scroll pa4"     , __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 144}}
-                    , react.createElement('div', { className: "w-100 mw7" , __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 145}}
-                      , react.createElement('div', { className: "pt6 pb6 flex"  , __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 146}}
+                  , react.createElement('div', { className: "w-100 mt6 flex justify-center overflow-y-scroll pa4"     , __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 144}}
+                    , react.createElement('div', { className: "w-100 mw7" , __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 145}}
+                      , react.createElement('div', { className: "pt6 pb6 flex"  , __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 146}}
                         , react.createElement(Sigil, {
                         ship: "~" + ship,
                         size: 36,
-                        color: "#" + color, __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 147}}
+                        color: "#" + color, __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 147}}
                         )
-                        , react.createElement('div', { className: "flex flex-column ml2"  , __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 152}}
+                        , react.createElement('div', { className: "flex flex-column ml2"  , __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 152}}
                           , react.createElement('a', { href: url,
                           className: "w-100 flex" ,
-                          target: "_blank", __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 153}}
-                          , react.createElement('p', { className: "f8 truncate" , __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 156}}, title
-                          , react.createElement('span', { className: "gray2 ml2 flex-shrink-0"  , __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 157}}, hostname, " ↗" )
+                          target: "_blank", __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 153}}
+                          , react.createElement('p', { className: "f8 truncate" , __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 156}}, title
+                          , react.createElement('span', { className: "gray2 ml2 flex-shrink-0"  , __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 157}}, hostname, " ↗" )
                           )
                           )
-                          , react.createElement('div', { className: "w-100 pt1" , __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 160}}
-                            , react.createElement('span', { className: "f9 pr2 v-mid " + nameClass, __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 161}}, (nickname) 
+                          , react.createElement('div', { className: "w-100 pt1" , __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 160}}
+                            , react.createElement('span', { className: "f9 pr2 v-mid " + nameClass, __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 161}}, (nickname) 
                               ? nickname 
                               : "~" + ship
                               )
-                              , react.createElement('span', { className: "f9 inter gray2 pr3 v-mid"    , __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 165}}
+                              , react.createElement('span', { className: "f9 inter gray2 pr3 v-mid"    , __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 165}}
                               , this.state.timeSinceLinkPost
                               )
-                              , react.createElement(Link$1, { to: "/~link" + props.path + "/" + props.page + "/" + props.link, className: "v-top", __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 168}}
-                              , react.createElement('span', { className: "f9 inter gray2"  , __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 169}}
+                              , react.createElement(Link$1, { to: "/~link" + props.path + "/" + props.page + "/" + props.link, className: "v-top", __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 168}}
+                              , react.createElement('span', { className: "f9 inter gray2"  , __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 169}}
                               , comments
                               )
                               )
                               )
                             )
                           )
-                        , react.createElement('div', { className: "relative ba br1 b--gray4 mt6 mb6"     , __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 176}}
+                        , react.createElement('div', { className: "relative ba br1 b--gray4 mt6 mb6"     , __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 176}}
                           , react.createElement('textarea', {
                           className: "w-100 f8 pa2 pr8"   ,
                           style: {
@@ -68038,7 +68221,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                           },
                           placeholder: "Leave a comment on this link"     ,
                           onChange: this.setComment,
-                          value: this.state.comment, __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 177}}
+                          value: this.state.comment, __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 177}}
                           )
                           , react.createElement('button', { className: "f8 ml2 absolute " + activeClasses,
                           disabled: !this.state.comment,
@@ -68046,11 +68229,21 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                           style: {
                             bottom: 12,
                             right: 8
-                          }, __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 187}}, "Post"
+                          }, __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 187}}, "Post"
 
                           )
                           )
-                        , react.createElement(Comments, { comments: props.data.comments, members: props.members, __self: this, __source: {fileName: _jsxFileName$b, lineNumber: 197}})
+                        , react.createElement(Comments, { 
+                        path: props.path, 
+                        key: props.path + props.commentPage,
+                        comments: props.data.comments, 
+                        commentPage: props.commentPage, 
+                        members: props.members,
+                        popout: props.popout,
+                        url: props.data.url,
+                        linkPage: props.page,
+                        linkIndex: props.link, __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 197}}
+                        )
                         )
                       )
                     )
@@ -68058,7 +68251,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                 }
               }
 
-            const _jsxFileName$c = "/Users/matilde/git/tlon/urbit/pkg/interface/link/src/js/components/root.js";
+            const _jsxFileName$e = "/Users/matilde/git/tlon/urbit/pkg/interface/link/src/js/components/root.js";
 
             class Root extends react_1 {
               constructor(props) {
@@ -68101,7 +68294,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                 let links = !!state.links ? state.links : {};
                 
                 return (
-                  react.createElement(BrowserRouter, {__self: this, __source: {fileName: _jsxFileName$c, lineNumber: 55}}
+                  react.createElement(BrowserRouter, {__self: this, __source: {fileName: _jsxFileName$e, lineNumber: 55}}
                     , react.createElement(Route, { exact: true, path: "/~link",
                       render:  (props) => {
                         return (
@@ -68110,17 +68303,17 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                             paths: paths,
                             rightPanelHide: true,
                             sidebarShown: true,
-                            links: links, __self: this, __source: {fileName: _jsxFileName$c, lineNumber: 59}}
-                            , react.createElement('div', { className: "h-100 w-100 overflow-x-hidden flex flex-column bg-white dn db-ns"       , __self: this, __source: {fileName: _jsxFileName$c, lineNumber: 65}}
-                            , react.createElement('div', { className: "pl3 pr3 pt2 dt pb3 w-100 h-100"      , __self: this, __source: {fileName: _jsxFileName$c, lineNumber: 66}}
-                                  , react.createElement('p', { className: "f8 pt3 gray2 w-100 h-100 dtc v-mid tc"       , __self: this, __source: {fileName: _jsxFileName$c, lineNumber: 67}}, "Channels are shared across groups. To create a new channel, "
-                                              , react.createElement('a', { className: "black", href: "/~contacts", __self: this, __source: {fileName: _jsxFileName$c, lineNumber: 68}}, "create a group"  ), "."
+                            links: links, __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 59}}
+                            , react.createElement('div', { className: "h-100 w-100 overflow-x-hidden flex flex-column bg-white dn db-ns"       , __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 65}}
+                            , react.createElement('div', { className: "pl3 pr3 pt2 dt pb3 w-100 h-100"      , __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 66}}
+                                  , react.createElement('p', { className: "f8 pt3 gray2 w-100 h-100 dtc v-mid tc"       , __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 67}}, "Channels are shared across groups. To create a new channel, "
+                                              , react.createElement('a', { className: "black", href: "/~contacts", __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 68}}, "create a group"  ), "."
                                   )
                                 )
                             )
                           )
                         );
-                      }, __self: this, __source: {fileName: _jsxFileName$c, lineNumber: 56}} )
+                      }, __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 56}} )
                       , react.createElement(Route, { exact: true, path: "/~link/(popout)?/:ship/:channel/:page?",
                         render:  (props) => {
                           // groups/contacts and link channels are the same thing in ver 1
@@ -68146,7 +68339,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                               sidebarShown: state.sidebarShown,
                               sidebarHideMobile: true,
                               popout: popout,
-                              links: links, __self: this, __source: {fileName: _jsxFileName$c, lineNumber: 92}}
+                              links: links, __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 92}}
                             
                               , react.createElement(Links, {
                               ...props,
@@ -68155,13 +68348,13 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                               page: page,
                               path: groupPath,
                               popout: popout,
-                              sidebarShown: state.sidebarShown, __self: this, __source: {fileName: _jsxFileName$c, lineNumber: 102}}
+                              sidebarShown: state.sidebarShown, __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 102}}
                               )
                             )
                           )
-                        }, __self: this, __source: {fileName: _jsxFileName$c, lineNumber: 75}}
+                        }, __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 75}}
                       )
-                      , react.createElement(Route, { exact: true, path: "/~link/(popout)?/:ship/:channel/:page/:index",
+                      , react.createElement(Route, { exact: true, path: "/~link/(popout)?/:ship/:channel/:page/:index/(comments)?/:commentpage?",
                         render:  (props) => {
                           let groupPath = 
                           `/${props.match.params.ship}/${props.match.params.channel}`;
@@ -68177,6 +68370,8 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                           ? links[groupPath]["page" + page][index] 
                           : {};
 
+                          let commentPage = props.match.params.commentpage || 0;
+
                           return (
                             react.createElement(Skeleton, {
                               spinner: state.spinner,
@@ -68186,7 +68381,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                               sidebarShown: state.sidebarShown,
                               sidebarHideMobile: true,
                               popout: popout,
-                              links: links, __self: this, __source: {fileName: _jsxFileName$c, lineNumber: 132}}
+                              links: links, __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 134}}
                             
                               , react.createElement(LinkDetail, {
                               ...props,
@@ -68196,28 +68391,29 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                               path: groupPath,
                               popout: popout,
                               sidebarShown: state.sidebarShown,
-                              data: data, __self: this, __source: {fileName: _jsxFileName$c, lineNumber: 142}}
+                              data: data,
+                              commentPage: commentPage, __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 144}}
                               )
                             )
                           )
-                        }, __self: this, __source: {fileName: _jsxFileName$c, lineNumber: 115}}
+                        }, __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 115}}
                       )
                   )
                 )
               }
             }
 
-            const _jsxFileName$d = "/Users/matilde/git/tlon/urbit/pkg/interface/link/src/js/components/lib/icons/icon-home.js";
+            const _jsxFileName$f = "/Users/matilde/git/tlon/urbit/pkg/interface/link/src/js/components/lib/icons/icon-home.js";
             class IconHome extends react_1 {
               render() {
                 return (
                   //TODO relocate to ~launch when OS1 is ported
-                  react.createElement('img', { src: "/~link/img/Home.png", width: 16, height: 16, __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 7}} )
+                  react.createElement('img', { src: "/~link/img/Home.png", width: 16, height: 16, __self: this, __source: {fileName: _jsxFileName$f, lineNumber: 7}} )
                 );
               }
             }
 
-            const _jsxFileName$e = "/Users/matilde/git/tlon/urbit/pkg/interface/link/src/js/components/lib/header-bar.js";
+            const _jsxFileName$g = "/Users/matilde/git/tlon/urbit/pkg/interface/link/src/js/components/lib/header-bar.js";
             class HeaderBar extends react_1 {
               render() {
                 // let spin = (this.props.spinner)
@@ -68238,13 +68434,13 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                 return (
                   react.createElement('div', { className: "bg-white w-100 justify-between relative tc pt3 "
                     + popout,
-                    style: { height: 40 }, __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 25}}
+                    style: { height: 40 }, __self: this, __source: {fileName: _jsxFileName$g, lineNumber: 25}}
                     , react.createElement('a', { className: "dib gray2 f9 inter absolute left-0"     ,
                       href: "/",
-                      style: {top: 14}, __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 28}}
-                      , react.createElement(IconHome, {__self: this, __source: {fileName: _jsxFileName$e, lineNumber: 31}})
+                      style: {top: 14}, __self: this, __source: {fileName: _jsxFileName$g, lineNumber: 28}}
+                      , react.createElement(IconHome, {__self: this, __source: {fileName: _jsxFileName$g, lineNumber: 31}})
                       , react.createElement('span', { className: "ml2 v-top lh-title"  ,
-                      style: {paddingTop: 3}, __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 32}}, "Home"
+                      style: {paddingTop: 3}, __self: this, __source: {fileName: _jsxFileName$g, lineNumber: 32}}, "Home"
 
                       )
                     )
@@ -68252,23 +68448,23 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                     style: {
                       verticalAlign: "text-top",
                       paddingTop: 3
-                    }, __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 37}}, title)
+                    }, __self: this, __source: {fileName: _jsxFileName$g, lineNumber: 37}}, title)
                     /* {spin} */
                     , react.createElement('div', { className: "absolute right-0 lh-copy"  ,
-                    style: {top: 12}, __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 43}}
+                    style: {top: 12}, __self: this, __source: {fileName: _jsxFileName$g, lineNumber: 43}}
                     , react.createElement(Sigil, {
                       ship: "~" + window.ship,
                       size: 16,
-                      color: "#000000", __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 45}}
+                      color: "#000000", __self: this, __source: {fileName: _jsxFileName$g, lineNumber: 45}}
                         )
-                      , react.createElement('span', { className: "mono f9 ml2 v-top"   , __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 50}}, "~" + window.ship)
+                      , react.createElement('span', { className: "mono f9 ml2 v-top"   , __self: this, __source: {fileName: _jsxFileName$g, lineNumber: 50}}, "~" + window.ship)
                     )
                   )
                 );
               }
             }
 
-            const _jsxFileName$f = "/Users/matilde/git/tlon/urbit/pkg/interface/link/src/index.js";
+            const _jsxFileName$h = "/Users/matilde/git/tlon/urbit/pkg/interface/link/src/index.js";
             api$1.setAuthTokens({
               ship: window.ship
             });
@@ -68276,11 +68472,11 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
             subscription.start();
 
             reactDom.render((
-              react.createElement(HeaderBar, {__self: undefined, __source: {fileName: _jsxFileName$f, lineNumber: 16}} )
+              react.createElement(HeaderBar, {__self: undefined, __source: {fileName: _jsxFileName$h, lineNumber: 16}} )
             ), document.getElementById("header"));
 
             reactDom.render((
-              react.createElement(Root, {__self: undefined, __source: {fileName: _jsxFileName$f, lineNumber: 20}} )
+              react.createElement(Root, {__self: undefined, __source: {fileName: _jsxFileName$h, lineNumber: 20}} )
             ), document.querySelectorAll("#root")[0]);
 
 }));

@@ -112,7 +112,7 @@ export class Root extends Component {
               )
             }}
           />
-          <Route exact path="/~link/(popout)?/:ship/:channel/:page/:index"
+          <Route exact path="/~link/(popout)?/:ship/:channel/:page/:index/(comments)?/:commentpage?"
             render={ (props) => {
               let groupPath = 
               `/${props.match.params.ship}/${props.match.params.channel}`;
@@ -127,6 +127,8 @@ export class Root extends Component {
               let data = !!links[groupPath]
               ? links[groupPath]["page" + page][index] 
               : {};
+
+              let commentPage = props.match.params.commentpage || 0;
 
               return (
                 <Skeleton
@@ -148,6 +150,7 @@ export class Root extends Component {
                   popout={popout}
                   sidebarShown={state.sidebarShown}
                   data={data}
+                  commentPage={commentPage}
                   />
                 </Skeleton>
               )

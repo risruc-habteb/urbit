@@ -7,6 +7,7 @@ export class LinkUpdateReducer {
       this.add(data, state);
       this.comments(data, state);
       this.commentAdd(data, state);
+      this.commentPage(data, state);
       this.page(data, state);
     }
   }
@@ -30,7 +31,10 @@ export class LinkUpdateReducer {
       let index = data.index;
       let storage = state.links[path][page][index];
 
-      storage.comments = data.data;
+      storage.comments = {};
+      storage.comments["page0"] = data.data.page;
+      storage.comments["total-items"] = data.data["total-items"];
+      storage.comments["total-pages"] = data.data["total-pages"];
 
       state.links[path][page][index] = storage;
     }
@@ -54,6 +58,22 @@ export class LinkUpdateReducer {
       let tempArray = state.links[path][page][index].comments.page;
       tempArray.unshift(tempObj);
       state.links[path][page][index].comments.page = tempArray;
+    }
+  }
+
+  commentPage(json, state) {
+    let data = _.get(json, 'commentPage', false);
+    if (data) {
+      let path = data.path;
+      let linkPage = "page" + data.linkPage;
+      let linkIndex = data.index;
+      let commentPage = "page" + data.comPageNo;
+
+      if (!state.links[path]) {
+        return false;
+      }
+
+      state.links[path][linkPage][linkIndex].comments[commentPage] = data.data;
     }
   }
 

@@ -92,7 +92,7 @@ class UrbitApi {
   }
 
   async getComments(path, url, page, index) {
-    let endpoint = "/~link/discussions" + path + "/" + window.btoa(url) + ".json";
+    let endpoint = "/~link/discussions" + path + "/" + window.btoa(url) + ".json?p=0";
     let promise = await fetch(endpoint);
     if (promise.ok) {
       let comments = {};
@@ -103,6 +103,24 @@ class UrbitApi {
       comments["link-update"].comments.index = index;
       comments["link-update"].comments.data = await promise.json();
       store.handleEvent(comments);
+    }
+  }
+
+  async getCommentsPage(path, url, page, index, commentPage) {
+    let endpoint = "/~link/discussions" + path + "/" + window.btoa(url) + ".json?p=" + commentPage;
+    let promise = await fetch(endpoint);
+    if (promise.ok) {
+      let comPage = "page" + commentPage;
+      let responseData = await promise.json();
+      let update = {};
+      update["link-update"] = {};
+      update["link-update"].commentPage = {};
+      update["link-update"].commentPage.path = path;
+      update["link-update"].commentPage.linkPage = page;
+      update["link-update"].commentPage.index = index;
+      update["link-update"].commentPage.comPageNo = commentPage;
+      update["link-update"].commentPage.data = responseData.page;
+      store.handleEvent(update);
     }
   }
 

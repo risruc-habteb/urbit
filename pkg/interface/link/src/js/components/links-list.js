@@ -4,6 +4,7 @@ import { SidebarSwitcher } from '/components/lib/icons/icon-sidebar-switch.js';
 import { Route, Link } from "react-router-dom";
 import { LinkItem } from '/components/lib/link-item.js';
 import { LinkSubmit } from '/components/lib/link-submit.js';
+import { Pagination } from '/components/lib/pagination.js';
 
 //TODO look at uxToHex wonky functionality
 import { uxToHex } from '../lib/util';
@@ -18,17 +19,30 @@ export class Links extends Component {
     }
   }
 
+  componentDidUpdate() {
+    let linkPage = "page" + this.props.page;
+    if ((this.props.page !== 0) && (!this.props.links[linkPage])) {
+      api.getPage(this.props.path, this.props.page);
+    }
+  }
+
   render() {
     let props = this.props;
     let popout = (props.popout) ? "/popout" : "";
     let channel = props.path.substr(1);
-    let linkPage = "page" + props.page
-
-    //TODO if "page[num]" is not in state, ask for it, send it to update reducer
+    let linkPage = "page" + props.page;
 
     let links = !!props.links[linkPage]
     ? props.links[linkPage]
     : {};
+
+    let currentPage = !!props.page
+    ? Number(props.page)
+    : 0;
+
+    let totalPages = !!props.links
+    ? Number(props.links["total-pages"])
+    : 1;
 
     let LinkList = Object.keys(links)
     .map((link) => {
@@ -111,7 +125,14 @@ export class Links extends Component {
             </div>
             <div className="pb4">
             {LinkList}
-            {/*TODO Pagination */}
+            <Pagination
+            {...props}
+            key={props.path + props.page}
+            popout={popout}
+            path={props.path}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            />
             </div>
           </div>
         </div>
