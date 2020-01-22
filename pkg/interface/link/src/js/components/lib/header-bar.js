@@ -22,19 +22,19 @@ export class HeaderBar extends Component {
     : document.title;
 
     return (
-      <div className={"bg-white w-100 justify-between relative tc pt3 "
+      <div className={"bg-white bg-black-d w-100 justify-between relative tc pt3 "
         + popout}
         style={{ height: 40 }}>
         <a className="dib gray2 f9 inter absolute left-1"
           href='/'
           style={{top: 14}}>
           <IconHome/>
-          <span className="ml2 v-top lh-title"
+          <span className="ml2 white-d v-top lh-title"
           style={{paddingTop: 3}}>
           Home
           </span>
         </a>
-        <span className="f9 inter dib"
+        <span className="f9 white-d inter dib"
         style={{
           verticalAlign: "text-top",
           paddingTop: 3
@@ -47,7 +47,7 @@ export class HeaderBar extends Component {
           size={16}
           color={"#000000"}
             />
-          <span className="mono f9 ml2 v-top">{"~" + window.ship}</span>
+          <span className="mono white-d f9 ml2 v-top">{"~" + window.ship}</span>
         </div>
       </div>
     );

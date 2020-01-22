@@ -133,7 +133,7 @@ export class LinkDetail extends Component {
         popout={props.popout}/>
         <Link 
         className="dib f8 fw4 v-top pt2 gray2"
-        to={"/~link" + props.path + "/" + props.page}>
+        to={"/~link" + popout + props.path + "/" + props.page}>
         {"<- Collection index"}
         </Link>
         <LinksTabBar
@@ -158,7 +158,7 @@ export class LinkDetail extends Component {
               </p>
               </a>
               <div className="w-100 pt1">
-                <span className={"f9 pr2 v-mid " + nameClass}>{(nickname) 
+                <span className={"f9 pr2 white-d v-mid " + nameClass}>{(nickname) 
                   ? nickname 
                   : "~" + ship}
                   </span>
@@ -175,7 +175,7 @@ export class LinkDetail extends Component {
               </div>
             <div className="relative ba br1 b--gray4 mt6 mb6">
               <textarea
-              className="w-100 f8 pa2 pr8"
+              className="w-100 bg-black-d white-d f8 pa2 pr8"
               style={{
                 resize: "none",
                 height: 75
@@ -184,7 +184,8 @@ export class LinkDetail extends Component {
               onChange={this.setComment}
               value={this.state.comment}
               />
-              <button className={"f8 ml2 absolute " + activeClasses}
+              <button className={"f8 bg-black-d white-d ml2 absolute " 
+              + activeClasses}
               disabled={!this.state.comment}
               onClick={this.onClickPost.bind(this)}
               style={{

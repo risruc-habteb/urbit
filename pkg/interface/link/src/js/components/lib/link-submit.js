@@ -62,7 +62,7 @@ export class LinkSubmit extends Component {
     return (
       <div className="relative ba b--gray4 br1 w-100 mb6">
         <textarea
-        className="pl2 w-100 f8"
+        className="pl2 bg-black-d white-d w-100 f8"
         style={{
           resize: "none",
           height: 40,
@@ -81,7 +81,7 @@ export class LinkSubmit extends Component {
         value={this.state.linkValue}
         />
         <textarea
-        className="pl2 w-100 f8"
+        className="pl2 bg-black-d white-d w-100 f8"
         style={{
           resize: "none",
           height: 40,
@@ -100,7 +100,7 @@ export class LinkSubmit extends Component {
         value={this.state.linkTitle}
         />
         <button
-          className={"absolute f8 ml2 flex-shrink-0 " + activeClasses}
+          className={"absolute bg-black-d f8 ml2 flex-shrink-0 " + activeClasses}
           disabled={!this.state.linkValid}
           onClick={this.onClickPost.bind(this)}
           style={{

@@ -40,7 +40,7 @@ export class CommentItem extends Component {
           color={"#" + props.color}
           />
           <p className="gray2 f9 flex items-center ml2">
-            <span className={"black " + props.nameClass}>
+            <span className={"black white-d " + props.nameClass}>
             {((props.nickname) ? props.nickname : props.ship)}
             </span>
             <span className="ml2">
@@ -48,7 +48,7 @@ export class CommentItem extends Component {
             </span>
           </p>
         </div>
-        <p className="inter f8 pv3">{props.content}</p>
+        <p className="inter f8 pv3 white-d">{props.content}</p>
       </div>
     )
   }

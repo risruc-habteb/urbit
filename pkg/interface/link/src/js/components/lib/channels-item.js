@@ -6,7 +6,10 @@ export class ChannelsItem extends Component {
   render() {
     const { props } = this;
 
-    let selectedClass = (props.selected) ? "bg-gray5 b--gray4" : "b--transparent";
+    let selectedClass = (props.selected) 
+    ? "bg-gray5 bg-gray0-d b--gray4 b--gray2-d" 
+    : "b--transparent";
+    
     let memberCount = Object.keys(props.members).length;
 
     return (

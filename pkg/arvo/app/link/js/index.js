@@ -63384,17 +63384,20 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
               render() {
                 const { props } = this;
 
-                let selectedClass = (props.selected) ? "bg-gray5 b--gray4" : "b--transparent";
+                let selectedClass = (props.selected) 
+                ? "bg-gray5 bg-gray0-d b--gray4 b--gray2-d" 
+                : "b--transparent";
+                
                 let memberCount = Object.keys(props.members).length;
 
                 return (
-                  react.createElement(Link$1, { to: "/~link" + props.link, __self: this, __source: {fileName: _jsxFileName, lineNumber: 13}}
-                    , react.createElement('div', { className: "w-100 v-mid f9 pl4 bt bb  " + selectedClass, __self: this, __source: {fileName: _jsxFileName, lineNumber: 14}}
-                      , react.createElement('p', { className: "f9 pt1" , __self: this, __source: {fileName: _jsxFileName, lineNumber: 15}}, props.name)
-                      , react.createElement('p', { className: "f9 gray2" , __self: this, __source: {fileName: _jsxFileName, lineNumber: 16}}
+                  react.createElement(Link$1, { to: "/~link" + props.link, __self: this, __source: {fileName: _jsxFileName, lineNumber: 16}}
+                    , react.createElement('div', { className: "w-100 v-mid f9 pl4 bt bb  " + selectedClass, __self: this, __source: {fileName: _jsxFileName, lineNumber: 17}}
+                      , react.createElement('p', { className: "f9 pt1" , __self: this, __source: {fileName: _jsxFileName, lineNumber: 18}}, props.name)
+                      , react.createElement('p', { className: "f9 gray2" , __self: this, __source: {fileName: _jsxFileName, lineNumber: 19}}
                         , memberCount + " contributor" + ((memberCount === 1) ? "" : "s")
                       )
-                      , react.createElement('p', { className: "f9 pb1" , __self: this, __source: {fileName: _jsxFileName, lineNumber: 19}}
+                      , react.createElement('p', { className: "f9 pb1" , __self: this, __source: {fileName: _jsxFileName, lineNumber: 22}}
                         , props.linkCount + " link" + ((props.linkCount === 1) ? "" : "s")
                       )
                     )
@@ -63467,7 +63470,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                 }
 
                 return (
-                  react.createElement('div', { className: `bn br-m br-l br-xl b--gray4 lh-copy h-100 
+                  react.createElement('div', { className: `bn br-m br-l br-xl b--gray4 b--gray2-d lh-copy h-100
        flex-shrink-0 mw5-m mw5-l mw5-xl pt3 pt0-m pt0-l pt0-xl
         relative ` + activeClasses + ((hiddenClasses)
                     ? "flex-basis-100-s flex-basis-30-ns"
@@ -63478,7 +63481,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
            pt1 pt4-m pt4-l pt4-xl 
            pr4 pb3 pb2-m pb2-l pb2-xl
            pl3 pl4-m pl4-l pl4-xl 
-           black-s gray2 c-default
+           black-s gray2 white-d c-default
            bb bn-m bn-l bn-xl b--gray4 mb2 mb0-m mb0-l mb0-xl`, __self: this, __source: {fileName: _jsxFileName$1, lineNumber: 76}}, "Your Collections"
 
                          )
@@ -63505,21 +63508,25 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
 
                 let popoutWindow = (popout)
                 ? ""
-                : "w-100-m-2-ns ba-m ba-l ba-xl b--gray2 br1 mh4-m mh4-l mh4-xl mb4-m mb4-l mb4-xl";
+                : "h-100-m-40-ns ph4-m ph4-l ph4-xl pb4-m pb4-l pb4-xl";
+
+                let popoutBorder = (popout)
+                ? ""
+                : "ba-m ba-l ba-xl b--gray2 br1";
 
                 return (
-                  react.createElement('div', { className: "h-100 w-100 h-100-m-40-ns " + popoutWindow, __self: this, __source: {fileName: _jsxFileName$2, lineNumber: 22}}
-                    , react.createElement('div', { className: `cf w-100 h-100 flex`, __self: this, __source: {fileName: _jsxFileName$2, lineNumber: 23}}
+                  react.createElement('div', { className: "h-100 w-100 " + popoutWindow, __self: this, __source: {fileName: _jsxFileName$2, lineNumber: 26}}
+                    , react.createElement('div', { className: `cf w-100 h-100 flex ` + popoutBorder, __self: this, __source: {fileName: _jsxFileName$2, lineNumber: 27}}
                     , react.createElement(ChannelsSidebar, {
                         popout: popout,
                         paths: this.props.paths, 
                         active: this.props.active,
                         selected: this.props.selected,
                         sidebarShown: this.props.sidebarShown,
-                        links: this.props.links, __self: this, __source: {fileName: _jsxFileName$2, lineNumber: 24}})
+                        links: this.props.links, __self: this, __source: {fileName: _jsxFileName$2, lineNumber: 28}})
                       , react.createElement('div', { className: "h-100 w-100 " + rightPanelHide, style: {
                         flexGrow: 1,
-                      }, __self: this, __source: {fileName: _jsxFileName$2, lineNumber: 31}}
+                      }, __self: this, __source: {fileName: _jsxFileName$2, lineNumber: 35}}
                         , this.props.children
                       )
                     )
@@ -63567,7 +63574,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                     , react.createElement('a', { href: `/~link/popout` + props.path, target: "_blank",
                     className: "dib fr" , __self: this, __source: {fileName: _jsxFileName$3, lineNumber: 38}}
                       , react.createElement('img', {
-                        className: `flex-shrink-0 pr4 dn ` + hidePopoutIcon,
+                        className: `flex-shrink-0 pr4 dn invert-d ` + hidePopoutIcon,
                         src: "/~link/img/popout.png",
                         height: "16",
                         width: "16", __self: this, __source: {fileName: _jsxFileName$3, lineNumber: 40}})
@@ -63593,7 +63600,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                         api$1.sidebarToggle();
                       }, __self: this, __source: {fileName: _jsxFileName$4, lineNumber: 13}}
                       , react.createElement('img', {
-                        className: `pr3 dn ` + popoutSwitcher,
+                        className: `pr3 invert-d dn ` + popoutSwitcher,
                         src: 
                           this.props.sidebarShown
                             ? "/~link/img/SwitcherOpen.png"
@@ -67529,7 +67536,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
 
                 let props = this.props;
 
-                let mono = (props.nickname) ? "inter" : "mono";
+                let mono = (props.nickname) ? "inter white-d" : "mono white-d";
 
                 let URLparser = new RegExp(/((?:([\w\d\.-]+)\:\/\/?){1}(?:(www)\.?){0,1}(((?:[\w\d-]+\.)*)([\w\d-]+\.[\w\d]+))){1}(?:\:(\d+)){0,1}((\/(?:(?:[^\/\s\?]+\/)*))(?:([^\?\/\s#]+?(?:.[^\?\s]+){0,1}){0,1}(?:\?([^\s#]+)){0,1})){0,1}(?:#([^#\s]+)){0,1}/);
 
@@ -67637,7 +67644,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                 return (
                   react.createElement('div', { className: "relative ba b--gray4 br1 w-100 mb6"     , __self: this, __source: {fileName: _jsxFileName$7, lineNumber: 63}}
                     , react.createElement('textarea', {
-                    className: "pl2 w-100 f8"  ,
+                    className: "pl2 bg-black-d white-d w-100 f8"    ,
                     style: {
                       resize: "none",
                       height: 40,
@@ -67656,7 +67663,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                     value: this.state.linkValue, __self: this, __source: {fileName: _jsxFileName$7, lineNumber: 64}}
                     )
                     , react.createElement('textarea', {
-                    className: "pl2 w-100 f8"  ,
+                    className: "pl2 bg-black-d white-d w-100 f8"    ,
                     style: {
                       resize: "none",
                       height: 40,
@@ -67675,7 +67682,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                     value: this.state.linkTitle, __self: this, __source: {fileName: _jsxFileName$7, lineNumber: 83}}
                     )
                     , react.createElement('button', {
-                      className: "absolute f8 ml2 flex-shrink-0 " + activeClasses,
+                      className: "absolute bg-black-d f8 ml2 flex-shrink-0 " + activeClasses,
                       disabled: !this.state.linkValid,
                       onClick: this.onClickPost.bind(this),
                       style: {
@@ -67894,7 +67901,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                       color: "#" + props.color, __self: this, __source: {fileName: _jsxFileName$a, lineNumber: 37}}
                       )
                       , react.createElement('p', { className: "gray2 f9 flex items-center ml2"    , __self: this, __source: {fileName: _jsxFileName$a, lineNumber: 42}}
-                        , react.createElement('span', { className: "black " + props.nameClass, __self: this, __source: {fileName: _jsxFileName$a, lineNumber: 43}}
+                        , react.createElement('span', { className: "black white-d " + props.nameClass, __self: this, __source: {fileName: _jsxFileName$a, lineNumber: 43}}
                         , ((props.nickname) ? props.nickname : props.ship)
                         )
                         , react.createElement('span', { className: "ml2", __self: this, __source: {fileName: _jsxFileName$a, lineNumber: 46}}
@@ -67902,7 +67909,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                         )
                       )
                     )
-                    , react.createElement('p', { className: "inter f8 pv3"  , __self: this, __source: {fileName: _jsxFileName$a, lineNumber: 51}}, props.content)
+                    , react.createElement('p', { className: "inter f8 pv3 white-d"   , __self: this, __source: {fileName: _jsxFileName$a, lineNumber: 51}}, props.content)
                   )
                 )
               }
@@ -68176,7 +68183,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                     popout: props.popout, __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 131}})
                     , react.createElement(Link$1, { 
                     className: "dib f8 fw4 v-top pt2 gray2"     ,
-                    to: "/~link" + props.path + "/" + props.page, __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 134}}
+                    to: "/~link" + popout + props.path + "/" + props.page, __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 134}}
                     , "<- Collection index"
                     )
                     , react.createElement(LinksTabBar, {
@@ -68201,7 +68208,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                           )
                           )
                           , react.createElement('div', { className: "w-100 pt1" , __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 160}}
-                            , react.createElement('span', { className: "f9 pr2 v-mid " + nameClass, __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 161}}, (nickname) 
+                            , react.createElement('span', { className: "f9 pr2 white-d v-mid " + nameClass, __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 161}}, (nickname) 
                               ? nickname 
                               : "~" + ship
                               )
@@ -68218,7 +68225,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                           )
                         , react.createElement('div', { className: "relative ba br1 b--gray4 mt6 mb6"     , __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 176}}
                           , react.createElement('textarea', {
-                          className: "w-100 f8 pa2 pr8"   ,
+                          className: "w-100 bg-black-d white-d f8 pa2 pr8"     ,
                           style: {
                             resize: "none",
                             height: 75
@@ -68227,7 +68234,8 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                           onChange: this.setComment,
                           value: this.state.comment, __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 177}}
                           )
-                          , react.createElement('button', { className: "f8 ml2 absolute " + activeClasses,
+                          , react.createElement('button', { className: "f8 bg-black-d white-d ml2 absolute " 
+                          + activeClasses,
                           disabled: !this.state.comment,
                           onClick: this.onClickPost.bind(this),
                           style: {
@@ -68246,7 +68254,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                         popout: props.popout,
                         url: props.data.url,
                         linkPage: props.page,
-                        linkIndex: props.link, __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 197}}
+                        linkIndex: props.link, __self: this, __source: {fileName: _jsxFileName$d, lineNumber: 198}}
                         )
                         )
                       )
@@ -68290,10 +68298,10 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                             rightPanelHide: true,
                             sidebarShown: true,
                             links: links, __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 41}}
-                            , react.createElement('div', { className: "h-100 w-100 overflow-x-hidden flex flex-column bg-white dn db-ns"       , __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 47}}
+                            , react.createElement('div', { className: "h-100 w-100 overflow-x-hidden flex flex-column bg-white bg-black-d dn db-ns"        , __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 47}}
                             , react.createElement('div', { className: "pl3 pr3 pt2 dt pb3 w-100 h-100"      , __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 48}}
                                   , react.createElement('p', { className: "f8 pt3 gray2 w-100 h-100 dtc v-mid tc"       , __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 49}}, "Channels are shared across groups. To create a new channel, "
-                                              , react.createElement('a', { className: "black", href: "/~contacts", __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 50}}, "create a group"  ), "."
+                                              , react.createElement('a', { className: "black white-d" , href: "/~contacts", __self: this, __source: {fileName: _jsxFileName$e, lineNumber: 50}}, "create a group"  ), "."
                                   )
                                 )
                             )
@@ -68394,7 +68402,9 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
               render() {
                 return (
                   //TODO relocate to ~launch when OS1 is ported
-                  react.createElement('img', { src: "/~link/img/Home.png", width: 16, height: 16, __self: this, __source: {fileName: _jsxFileName$f, lineNumber: 7}} )
+                  react.createElement('img', { 
+                  className: "invert-d",
+                  src: "/~link/img/Home.png", width: 16, height: 16, __self: this, __source: {fileName: _jsxFileName$f, lineNumber: 7}} )
                 );
               }
             }
@@ -68418,19 +68428,19 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                 : document.title;
 
                 return (
-                  react.createElement('div', { className: "bg-white w-100 justify-between relative tc pt3 "
+                  react.createElement('div', { className: "bg-white bg-black-d w-100 justify-between relative tc pt3 "
                     + popout,
                     style: { height: 40 }, __self: this, __source: {fileName: _jsxFileName$g, lineNumber: 25}}
                     , react.createElement('a', { className: "dib gray2 f9 inter absolute left-1"     ,
                       href: "/",
                       style: {top: 14}, __self: this, __source: {fileName: _jsxFileName$g, lineNumber: 28}}
                       , react.createElement(IconHome, {__self: this, __source: {fileName: _jsxFileName$g, lineNumber: 31}})
-                      , react.createElement('span', { className: "ml2 v-top lh-title"  ,
+                      , react.createElement('span', { className: "ml2 white-d v-top lh-title"   ,
                       style: {paddingTop: 3}, __self: this, __source: {fileName: _jsxFileName$g, lineNumber: 32}}, "Home"
 
                       )
                     )
-                    , react.createElement('span', { className: "f9 inter dib"  ,
+                    , react.createElement('span', { className: "f9 white-d inter dib"   ,
                     style: {
                       verticalAlign: "text-top",
                       paddingTop: 3
@@ -68443,7 +68453,7 @@ lyrtesmudnytbyrsenwegfyrmurtelreptegpecnelnevfes\
                       size: 16,
                       color: "#000000", __self: this, __source: {fileName: _jsxFileName$g, lineNumber: 45}}
                         )
-                      , react.createElement('span', { className: "mono f9 ml2 v-top"   , __self: this, __source: {fileName: _jsxFileName$g, lineNumber: 50}}, "~" + window.ship)
+                      , react.createElement('span', { className: "mono white-d f9 ml2 v-top"    , __self: this, __source: {fileName: _jsxFileName$g, lineNumber: 50}}, "~" + window.ship)
                     )
                   )
                 );

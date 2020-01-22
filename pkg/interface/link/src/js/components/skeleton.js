@@ -16,11 +16,15 @@ export class Skeleton extends Component {
 
     let popoutWindow = (popout)
     ? ""
-    : "w-100-m-2-ns ba-m ba-l ba-xl b--gray2 br1 mh4-m mh4-l mh4-xl mb4-m mb4-l mb4-xl"
+    : "h-100-m-40-ns ph4-m ph4-l ph4-xl pb4-m pb4-l pb4-xl"
+
+    let popoutBorder = (popout)
+    ? ""
+    : "ba-m ba-l ba-xl b--gray2 br1"
 
     return (
-      <div className={"h-100 w-100 h-100-m-40-ns " + popoutWindow}>
-        <div className={`cf w-100 h-100 flex`}>
+      <div className={"h-100 w-100 " + popoutWindow}>
+        <div className={`cf w-100 h-100 flex ` + popoutBorder}>
         <ChannelsSidebar
             popout={popout}
             paths={this.props.paths} 
