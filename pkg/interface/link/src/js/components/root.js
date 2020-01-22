@@ -20,24 +20,6 @@ export class Root extends Component {
     this.setSpinner = this.setSpinner.bind(this);
   }
 
-  componentDidMount() {
-    // remove window dressing on index.html if popout
-    if (window.location.href.includes("popout/")) {
-      this.popout();
-    }
-  }
-
-  popout() {
-    let root = document.getElementById("root");
-    root.classList.add("h-100");
-    root.classList.remove("h-100-m-40-ns", "ba-m", "ba-l", "ba-xl");
-
-    let body = document.body;
-    body.classList.remove(
-      "ph4-m", "ph4-l", "ph4-xl", "pb4-m", "pb4-l", "pb4-xl"
-      );
-  }
-
   setSpinner(spinner) {
     this.setState({
       spinner

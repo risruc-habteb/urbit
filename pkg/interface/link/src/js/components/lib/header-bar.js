@@ -25,7 +25,7 @@ export class HeaderBar extends Component {
       <div className={"bg-white w-100 justify-between relative tc pt3 "
         + popout}
         style={{ height: 40 }}>
-        <a className="dib gray2 f9 inter absolute left-0"
+        <a className="dib gray2 f9 inter absolute left-1"
           href='/'
           style={{top: 14}}>
           <IconHome/>
@@ -40,7 +40,7 @@ export class HeaderBar extends Component {
           paddingTop: 3
         }}>{title}</span>
         {/* {spin} */}
-        <div className="absolute right-0 lh-copy"
+        <div className="absolute right-1 lh-copy"
         style={{top: 12}}>
         <Sigil
           ship={"~" + window.ship}

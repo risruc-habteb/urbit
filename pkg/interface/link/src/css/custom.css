@@ -93,4 +93,7 @@ a {
   .h-100-m-40-ns {
     height: calc(100% - 40px);
   }
+  .w-100-m-2-ns {
+    width: calc(100% - 2rem);
+  }
 }
