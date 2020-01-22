@@ -25,7 +25,7 @@ class Store {
 
   async loadLinks(json) {
     // if initial contacts, queue up getting these paths from link-store
-    let data = _.get(json, 'contact-initial', false);
+    let data = _.get(json, 'group-initial', false);
     if (data) {
       for (let each of Object.keys(data)) {
         let linkUrl = "/~link/submissions" + each + ".json?p=0";
