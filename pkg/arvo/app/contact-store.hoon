@@ -141,6 +141,8 @@
   |=  [=path =ship]
   ^-  (quip card _state)
   =/  contacts  (~(got by rolodex) path)
+  ~&  contacts
+  ~&  ship
   ?>  (~(has by contacts) ship)
   =.  contacts  (~(del by contacts) ship)
   :-  (send-diff path [%remove path ship])
